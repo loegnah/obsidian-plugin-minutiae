@@ -4,8 +4,8 @@
   "description": "Small tweaks and quality-of-life adjustments for Obsidian.",
   "main": "main.js",
   "scripts": {
-    "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit && node esbuild.config.mjs production",
+    "dev": "bun run build.ts --watch",
+    "build": "tsc -noEmit && bun run build.ts production",
     "typecheck": "tsc -noEmit"
   },
   "keywords": [
@@ -16,8 +16,6 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.17.0",
-    "builtin-modules": "5.0.0",
-    "esbuild": "^0.25.0",
     "obsidian": "latest",
     "typescript": "^5.7.3"
   }
