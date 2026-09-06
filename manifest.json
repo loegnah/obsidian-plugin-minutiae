@@ -1,0 +1,9 @@
+{
+  "id": "minutiae",
+  "name": "Minutiae",
+  "version": "0.1.0",
+  "minAppVersion": "0.15.0",
+  "description": "Small tweaks and quality-of-life adjustments for Obsidian.",
+  "author": "loegnah",
+  "isDesktopOnly": false
+}
