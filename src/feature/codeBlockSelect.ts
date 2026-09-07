@@ -12,7 +12,7 @@ export interface CodeBlockRange {
 
 export function findCodeBlockNode(
   view: { state: EditorView["state"] },
-  pos: number
+  pos: number,
 ): SyntaxNode | null {
   const { state } = view;
   const tree = ensureSyntaxTree(state, pos, 50) ?? syntaxTree(state);
@@ -32,7 +32,7 @@ export function findCodeBlockNode(
 
 export function findFencedCodeBlockByLines(
   state: EditorView["state"],
-  pos: number
+  pos: number,
 ): CodeBlockRange | null {
   const { doc } = state;
   const targetLine = doc.lineAt(pos);
@@ -91,7 +91,7 @@ function buildFencedRange(
   doc: EditorView["state"]["doc"],
   startLineNum: number,
   endLineNum: number,
-  hasClosingFence: boolean
+  hasClosingFence: boolean,
 ): CodeBlockRange {
   const startLine = doc.line(startLineNum);
   const endLine = doc.line(endLineNum);
@@ -106,10 +106,7 @@ function buildFencedRange(
   return { from: contentStart, to: contentEnd, blockFrom, blockTo };
 }
 
-export function getCodeBlockRange(
-  state: EditorView["state"],
-  pos: number
-): CodeBlockRange | null {
+export function getCodeBlockRange(state: EditorView["state"], pos: number): CodeBlockRange | null {
   const fencedRange = findFencedCodeBlockByLines(state, pos);
   if (fencedRange) return fencedRange;
 
@@ -124,14 +121,10 @@ export function getCodeBlockRange(
 
   const startLine = state.doc.lineAt(blockFrom);
   const contentStart = Math.min(state.doc.length, startLine.to + 1);
-  const endCheckPos = Math.max(
-    blockFrom,
-    blockTo > blockFrom ? blockTo - 1 : blockFrom
-  );
+  const endCheckPos = Math.max(blockFrom, blockTo > blockFrom ? blockTo - 1 : blockFrom);
   const lastLine = state.doc.lineAt(endCheckPos);
   const isClosingFence =
-    lastLine.number > startLine.number &&
-    /^\s*(`{3,}|~{3,})/.test(lastLine.text);
+    lastLine.number > startLine.number && /^\s*(`{3,}|~{3,})/.test(lastLine.text);
   const contentEnd = isClosingFence
     ? Math.max(contentStart, state.doc.line(lastLine.number - 1).to)
     : blockTo;
@@ -149,7 +142,7 @@ export function handleCodeBlockSelect(
     state: EditorView["state"];
     dispatch: (tr: { selection: EditorSelection }) => void;
   },
-  isEnabled: () => boolean
+  isEnabled: () => boolean,
 ): boolean {
   if (!isEnabled()) return false;
 
@@ -177,15 +170,13 @@ export function handleCodeBlockSelect(
   });
   return true;
 }
-export function createCodeBlockSelectExtension(
-  isEnabled: () => boolean
-): Extension {
+export function createCodeBlockSelectExtension(isEnabled: () => boolean): Extension {
   return Prec.highest(
     keymap.of([
       {
         key: "Mod-a",
         run: (view: EditorView) => handleCodeBlockSelect(view, isEnabled),
       },
-    ])
+    ]),
   );
 }

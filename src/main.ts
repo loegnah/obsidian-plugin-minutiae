@@ -1,10 +1,7 @@
 import { Notice, Plugin } from "obsidian";
-import {
-  DEFAULT_SETTINGS,
-  MinutiaeSettingTab,
-  type MinutiaeSettings,
-} from "./settings";
+
 import { createCodeBlockSelectExtension } from "./feature/codeBlockSelect";
+import { DEFAULT_SETTINGS, MinutiaeSettingTab, type MinutiaeSettings } from "./settings";
 
 export default class MinutiaePlugin extends Plugin {
   settings: MinutiaeSettings = DEFAULT_SETTINGS;
@@ -14,9 +11,8 @@ export default class MinutiaePlugin extends Plugin {
 
     this.addSettingTab(new MinutiaeSettingTab(this.app, this));
     this.registerEditorExtension(
-      createCodeBlockSelectExtension(() => this.settings.codeBlockSelectAll)
+      createCodeBlockSelectExtension(() => this.settings.codeBlockSelectAll),
     );
-
 
     const statusBarItem = this.addStatusBarItem();
     statusBarItem.setText("✨ Minutiae");
