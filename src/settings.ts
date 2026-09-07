@@ -3,10 +3,12 @@ import type MinutiaePlugin from "./main";
 
 export interface MinutiaeSettings {
   exampleToggle: boolean;
+  codeBlockSelectAll: boolean;
 }
 
 export const DEFAULT_SETTINGS: MinutiaeSettings = {
   exampleToggle: false,
+  codeBlockSelectAll: true,
 };
 
 export class MinutiaeSettingTab extends PluginSettingTab {
@@ -29,6 +31,18 @@ export class MinutiaeSettingTab extends PluginSettingTab {
           .setValue(this.plugin.settings.exampleToggle)
           .onChange(async (value) => {
             this.plugin.settings.exampleToggle = value;
+            await this.plugin.saveSettings();
+          })
+      );
+
+    new Setting(containerEl)
+      .setName("Code block select all")
+      .setDesc("Scope Cmd/Ctrl+A to select code block contents first.")
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.codeBlockSelectAll)
+          .onChange(async (value) => {
+            this.plugin.settings.codeBlockSelectAll = value;
             await this.plugin.saveSettings();
           })
       );
