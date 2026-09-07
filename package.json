@@ -2,24 +2,28 @@
   "name": "obsidian-plugin-minutiae",
   "version": "0.1.0",
   "description": "Small tweaks and quality-of-life adjustments for Obsidian.",
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin"
+  ],
+  "license": "MIT",
+  "author": "loegnah",
   "main": "main.js",
   "scripts": {
     "dev": "bun run build.ts --watch",
     "build": "tsc --noEmit && bun run build.ts production",
     "typecheck": "tsc --noEmit",
-    "test": "bun test"
+    "test": "bun test",
+    "lint": "oxlint && oxfmt --check",
+    "lint:write": "oxlint --fix && oxfmt"
   },
-  "keywords": [
-    "obsidian",
-    "obsidian-plugin"
-  ],
-  "author": "loegnah",
-  "license": "MIT",
   "devDependencies": {
     "@codemirror/language": "^6.12.4",
     "@lezer/markdown": "^1.7.2",
     "@types/node": "^20.17.0",
     "obsidian": "latest",
+    "oxfmt": "^0.66.0",
+    "oxlint": "^1.81.0",
     "typescript": "^5.7.3"
   }
 }
