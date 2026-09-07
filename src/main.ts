@@ -13,6 +13,15 @@ export default class MinutiaePlugin extends Plugin {
 
     this.addSettingTab(new MinutiaeSettingTab(this.app, this));
 
+    const statusBarItem = this.addStatusBarItem();
+    statusBarItem.setText("✨ Minutiae");
+
+    this.addRibbonIcon("sparkles", "Minutiae", () => {
+      new Notice("Minutiae is running!");
+    });
+
+    new Notice("Minutiae enabled");
+
     this.addCommand({
       id: "hello-minutiae",
       name: "Say Hello",
