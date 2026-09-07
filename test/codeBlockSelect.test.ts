@@ -134,4 +134,48 @@ describe("codeBlockSelect", () => {
     const secondHandled = handleCodeBlockSelect(view, () => true);
     expect(secondHandled).toBe(false);
   });
+
+  it("works without markdown language parser extension", () => {
+    const doc = "Intro\n```ts\nconst x = 1;\n```\nOutro";
+    let state = EditorState.create({
+      doc,
+      selection: EditorSelection.cursor(doc.indexOf("const x")),
+    });
+    const view = {
+      get state() {
+        return state;
+      },
+      dispatch(tr: { selection: EditorSelection }) {
+        state = state.update(tr).state;
+      },
+    };
+
+    const handled = handleCodeBlockSelect(view, () => true);
+    expect(handled).toBe(true);
+    expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
+      "const x = 1;"
+    );
+  });
+
+  it("handles tilde fenced code block", () => {
+    const doc = "~~~python\nprint('hello')\n~~~";
+    const view = createMockView(doc, 12);
+
+    const handled = handleCodeBlockSelect(view, () => true);
+    expect(handled).toBe(true);
+    expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
+      "print('hello')"
+    );
+  });
+
+  it("handles nested fences with longer outer fence", () => {
+    const doc = "````markdown\n```js\nconst a = 1;\n```\n````";
+    const view = createMockView(doc, doc.indexOf("const a"));
+
+    const handled = handleCodeBlockSelect(view, () => true);
+    expect(handled).toBe(true);
+    expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
+      "```js\nconst a = 1;\n```"
+    );
+  });
 });

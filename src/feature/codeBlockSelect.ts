@@ -30,23 +30,100 @@ export function findCodeBlockNode(
   return null;
 }
 
+export function findFencedCodeBlockByLines(
+  state: EditorView["state"],
+  pos: number
+): CodeBlockRange | null {
+  const { doc } = state;
+  const targetLine = doc.lineAt(pos);
+  const targetLineNum = targetLine.number;
+
+  let inBlock = false;
+  let fenceChar = "";
+  let fenceLen = 0;
+  let blockStartLine = 0;
+
+  for (let i = 1; i <= targetLineNum; i++) {
+    const line = doc.line(i);
+    const text = line.text;
+
+    if (!inBlock) {
+      const match = text.match(/^(\s{0,3})(`{3,}|~{3,})(.*)$/);
+      if (match) {
+        const char = match[2][0];
+        const len = match[2].length;
+        const rest = match[3];
+        if (char === "`" && rest.includes("`")) continue;
+        inBlock = true;
+        fenceChar = char;
+        fenceLen = len;
+        blockStartLine = i;
+      }
+    } else {
+      const match = text.match(/^(\s{0,3})(`{3,}|~{3,})\s*$/);
+      if (match && match[2][0] === fenceChar && match[2].length >= fenceLen) {
+        if (i === targetLineNum) {
+          return buildFencedRange(doc, blockStartLine, i, true);
+        }
+        inBlock = false;
+      }
+    }
+  }
+
+  if (!inBlock) return null;
+
+  let blockEndLine = doc.lines;
+  let hasClosingFence = false;
+  for (let i = targetLineNum + 1; i <= doc.lines; i++) {
+    const line = doc.line(i);
+    const match = line.text.match(/^(\s{0,3})(`{3,}|~{3,})\s*$/);
+    if (match && match[2][0] === fenceChar && match[2].length >= fenceLen) {
+      blockEndLine = i;
+      hasClosingFence = true;
+      break;
+    }
+  }
+
+  return buildFencedRange(doc, blockStartLine, blockEndLine, hasClosingFence);
+}
+
+function buildFencedRange(
+  doc: EditorView["state"]["doc"],
+  startLineNum: number,
+  endLineNum: number,
+  hasClosingFence: boolean
+): CodeBlockRange {
+  const startLine = doc.line(startLineNum);
+  const endLine = doc.line(endLineNum);
+  const blockFrom = startLine.from;
+  const blockTo = endLine.to;
+  const contentStart = Math.min(doc.length, startLine.to + 1);
+  const contentEnd =
+    hasClosingFence && endLineNum > startLineNum
+      ? Math.max(contentStart, doc.line(endLineNum - 1).to)
+      : blockTo;
+
+  return { from: contentStart, to: contentEnd, blockFrom, blockTo };
+}
+
 export function getCodeBlockRange(
   state: EditorView["state"],
   pos: number
 ): CodeBlockRange | null {
+  const fencedRange = findFencedCodeBlockByLines(state, pos);
+  if (fencedRange) return fencedRange;
+
   const targetNode = findCodeBlockNode({ state }, pos);
   if (!targetNode) return null;
 
   const blockFrom = targetNode.from;
   const blockTo = targetNode.to;
-
   if (targetNode.name === "CodeBlock") {
     return { from: blockFrom, to: blockTo, blockFrom, blockTo };
   }
 
   const startLine = state.doc.lineAt(blockFrom);
   const contentStart = Math.min(state.doc.length, startLine.to + 1);
-
   const endCheckPos = Math.max(
     blockFrom,
     blockTo > blockFrom ? blockTo - 1 : blockFrom
@@ -55,7 +132,6 @@ export function getCodeBlockRange(
   const isClosingFence =
     lastLine.number > startLine.number &&
     /^\s*(`{3,}|~{3,})/.test(lastLine.text);
-
   const contentEnd = isClosingFence
     ? Math.max(contentStart, state.doc.line(lastLine.number - 1).to)
     : blockTo;
