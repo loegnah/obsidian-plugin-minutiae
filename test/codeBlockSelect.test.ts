@@ -2,11 +2,15 @@ import { describe, expect, it } from "bun:test";
 
 import { LRLanguage } from "@codemirror/language";
 import { EditorSelection, EditorState } from "@codemirror/state";
+import type { LRParser } from "@lezer/lr";
 import { parser as mdParser } from "@lezer/markdown";
 
 import { handleCodeBlockSelect } from "../src/feature/codeBlockSelect";
 
-const mdLanguage = LRLanguage.define({ parser: mdParser });
+// MarkdownParser implements Parser interface, cast to LRParser for test language definition
+const mdLanguage = LRLanguage.define({
+  parser: mdParser as unknown as LRParser,
+});
 
 function createMockView(docText: string, cursorOrSelection: number | [number, number]) {
   const selection =

@@ -20,6 +20,7 @@
   "devDependencies": {
     "@codemirror/language": "^6.12.4",
     "@lezer/markdown": "^1.7.2",
+    "@types/bun": "^1.4.1",
     "@types/node": "^20.17.0",
     "obsidian": "latest",
     "oxfmt": "^0.66.0",
