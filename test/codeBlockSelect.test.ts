@@ -1,11 +1,10 @@
 import { describe, expect, it } from "bun:test";
-import { EditorSelection, EditorState } from "@codemirror/state";
+
 import { LRLanguage } from "@codemirror/language";
+import { EditorSelection, EditorState } from "@codemirror/state";
 import { parser as mdParser } from "@lezer/markdown";
-import {
-  getCodeBlockRange,
-  handleCodeBlockSelect,
-} from "../src/feature/codeBlockSelect";
+
+import { handleCodeBlockSelect } from "../src/feature/codeBlockSelect";
 
 const mdLanguage = LRLanguage.define({ parser: mdParser });
 
@@ -42,14 +41,14 @@ describe("codeBlockSelect", () => {
     const firstHandled = handleCodeBlockSelect(view, () => true);
     expect(firstHandled).toBe(true);
     expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
-      "const x = 1;\nconsole.log(x);"
+      "const x = 1;\nconsole.log(x);",
     );
 
     // 2nd press: selects the entire fenced block
     const secondHandled = handleCodeBlockSelect(view, () => true);
     expect(secondHandled).toBe(true);
     expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
-      "```ts\nconst x = 1;\nconsole.log(x);\n```"
+      "```ts\nconst x = 1;\nconsole.log(x);\n```",
     );
 
     // 3rd press: returns false so default selectAll can take over
@@ -65,7 +64,7 @@ describe("codeBlockSelect", () => {
     const handled = handleCodeBlockSelect(view, () => true);
     expect(handled).toBe(true);
     expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
-      "const a = 10;"
+      "const a = 10;",
     );
   });
 
@@ -77,7 +76,7 @@ describe("codeBlockSelect", () => {
     const handled = handleCodeBlockSelect(view, () => true);
     expect(handled).toBe(true);
     expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
-      "const a = 10;"
+      "const a = 10;",
     );
   });
 
@@ -105,7 +104,7 @@ describe("codeBlockSelect", () => {
     const firstHandled = handleCodeBlockSelect(view, () => true);
     expect(firstHandled).toBe(true);
     expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
-      "```js\n```"
+      "```js\n```",
     );
 
     // 2nd press falls through
@@ -120,7 +119,7 @@ describe("codeBlockSelect", () => {
     const handled = handleCodeBlockSelect(view, () => true);
     expect(handled).toBe(true);
     expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
-      "const unclosed = true;"
+      "const unclosed = true;",
     );
   });
 
@@ -153,7 +152,7 @@ describe("codeBlockSelect", () => {
     const handled = handleCodeBlockSelect(view, () => true);
     expect(handled).toBe(true);
     expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
-      "const x = 1;"
+      "const x = 1;",
     );
   });
 
@@ -164,7 +163,7 @@ describe("codeBlockSelect", () => {
     const handled = handleCodeBlockSelect(view, () => true);
     expect(handled).toBe(true);
     expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
-      "print('hello')"
+      "print('hello')",
     );
   });
 
@@ -175,7 +174,7 @@ describe("codeBlockSelect", () => {
     const handled = handleCodeBlockSelect(view, () => true);
     expect(handled).toBe(true);
     expect(view.state.sliceDoc(view.state.selection.main.from, view.state.selection.main.to)).toBe(
-      "```js\nconst a = 1;\n```"
+      "```js\nconst a = 1;\n```",
     );
   });
 });

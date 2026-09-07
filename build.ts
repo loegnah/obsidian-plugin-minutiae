@@ -1,5 +1,5 @@
-import { builtinModules } from "node:module";
 import { watch } from "node:fs";
+import { builtinModules } from "node:module";
 
 const prod = process.argv.includes("production");
 const isWatch = process.argv.includes("--watch");
