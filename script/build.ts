@@ -1,8 +1,10 @@
 import { watch } from "node:fs";
+import { copyFile, mkdir } from "node:fs/promises";
 import { builtinModules } from "node:module";
 
 const prod = process.argv.includes("production");
 const isWatch = process.argv.includes("--watch");
+const outdir = "dist";
 
 const external = [
   "obsidian",
@@ -13,10 +15,18 @@ const external = [
   ...builtinModules.map((m) => `node:${m}`),
 ];
 
+async function copyAssets() {
+  await Promise.all([
+    copyFile("manifest.json", `${outdir}/manifest.json`),
+    copyFile("src/styles.css", `${outdir}/styles.css`),
+  ]);
+}
+
 async function bundle() {
+  await mkdir(outdir, { recursive: true });
   const result = await Bun.build({
     entrypoints: ["src/main.ts"],
-    outdir: ".",
+    outdir,
     naming: "main.js",
     format: "cjs",
     target: "browser",
@@ -30,14 +40,18 @@ async function bundle() {
     if (!isWatch) process.exit(1);
     return;
   }
-  console.log(`[${new Date().toLocaleTimeString()}] Built main.js`);
+  await copyAssets();
+  console.log(`[${new Date().toLocaleTimeString()}] Built to ${outdir}/`);
 }
 
 await bundle();
 
 if (isWatch) {
-  console.log("Watching src/ for changes...");
+  console.log("Watching src/ and manifest.json for changes...");
   watch("src", { recursive: true }, async () => {
     await bundle();
+  });
+  watch("manifest.json", async () => {
+    await copyAssets();
   });
 }

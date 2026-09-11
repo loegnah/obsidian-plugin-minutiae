@@ -22,10 +22,18 @@ bun run dev
 bun run build
 ```
 
-### 보관함(Vault) 연동 테스트
+### 보관함(Vault) 연동
 
-볼트 플러그인 경로에 심볼릭 링크 생성 후 `bun run dev`:
+빌드 결과물(`dist/`)을 볼트 플러그인 경로로 복사:
 
 ```bash
-ln -s "$(pwd)" /path/to/vault/.obsidian/plugins/minutiae
+# 기본 경로 (~/note/dev/.obsidian/plugins/minutiae)
+bun run deploy
+
+# 볼트 이름만 지정 (~/note/work/.obsidian/plugins/minutiae)
+bun run deploy work
+
+# 전체 경로 지정 (~ 또는 / 시작)
+bun run deploy ~/custom/vault/.obsidian/plugins/minutiae
+bun run deploy /path/to/vault/.obsidian/plugins/minutiae
 ```
