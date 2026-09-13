@@ -1,0 +1,11 @@
+/* Minutiae styles */
+
+.minutiae-type-badge {
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 4px;
+  padding: 0 5px;
+  margin-left: 6px;
+  white-space: nowrap;
+}

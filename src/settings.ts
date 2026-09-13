@@ -5,11 +5,13 @@ import type MinutiaePlugin from "./main";
 export interface MinutiaeSettings {
   exampleToggle: boolean;
   codeBlockSelectAll: boolean;
+  noteTypeBadge: boolean;
 }
 
 export const DEFAULT_SETTINGS: MinutiaeSettings = {
   exampleToggle: false,
   codeBlockSelectAll: true,
+  noteTypeBadge: true,
 };
 
 export class MinutiaeSettingTab extends PluginSettingTab {
@@ -40,6 +42,16 @@ export class MinutiaeSettingTab extends PluginSettingTab {
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.codeBlockSelectAll).onChange(async (value) => {
           this.plugin.settings.codeBlockSelectAll = value;
+          await this.plugin.saveSettings();
+        }),
+      );
+
+    new Setting(containerEl)
+      .setName("Note type badge")
+      .setDesc("Show frontmatter type as a badge in explorer, search and quick switcher.")
+      .addToggle((toggle) =>
+        toggle.setValue(this.plugin.settings.noteTypeBadge).onChange(async (value) => {
+          this.plugin.settings.noteTypeBadge = value;
           await this.plugin.saveSettings();
         }),
       );

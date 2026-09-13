@@ -1,6 +1,7 @@
 import { Notice, Plugin } from "obsidian";
 
 import { createCodeBlockSelectExtension } from "./feature/codeBlockSelect";
+import { registerNoteTypeBadges } from "./feature/noteType";
 import { DEFAULT_SETTINGS, MinutiaeSettingTab, type MinutiaeSettings } from "./settings";
 
 export default class MinutiaePlugin extends Plugin {
@@ -13,6 +14,7 @@ export default class MinutiaePlugin extends Plugin {
     this.registerEditorExtension(
       createCodeBlockSelectExtension(() => this.settings.codeBlockSelectAll),
     );
+    registerNoteTypeBadges(this, () => this.settings.noteTypeBadge);
 
     const statusBarItem = this.addStatusBarItem();
     statusBarItem.setText("✨ Minutiae");
