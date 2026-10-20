@@ -12,7 +12,8 @@
   "scripts": {
     "dev": "bun run script/build.ts --watch",
     "build": "tsc --noEmit && bun run script/build.ts production",
-    "deploy": "bun run script/deploy.ts",
+    "setup": "bun run script/setup.ts",
+    "deploy": "bun run build && bun run script/deploy.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "lint": "oxlint && oxfmt --check",
