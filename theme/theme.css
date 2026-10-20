@@ -1,0 +1,209 @@
+body {
+  /* Heading Colors: Accent -> Text Normal gradient */
+  --h1-color: var(--text-accent);
+  --h2-color: color-mix(in srgb, var(--text-accent) 82%, var(--text-normal));
+  --h3-color: color-mix(in srgb, var(--text-accent) 64%, var(--text-normal));
+  --h4-color: color-mix(in srgb, var(--text-accent) 46%, var(--text-normal));
+  --h5-color: color-mix(in srgb, var(--text-accent) 28%, var(--text-normal));
+  --h6-color: color-mix(in srgb, var(--text-accent) 14%, var(--text-normal));
+
+  /* Lists: clearer markers & breathing room */
+  --list-indent: 2.25em;
+  --list-indent-editing: 1.25em;
+  --list-spacing: 0.2em;
+  --list-bullet-size: 0.42em;
+  --list-marker-color: color-mix(in srgb, var(--text-accent) 75%, var(--text-muted));
+  --list-marker-color-hover: var(--text-accent);
+  --list-marker-color-collapsed: var(--text-accent);
+
+  /* Checkboxes */
+  --checkbox-border-color: color-mix(in srgb, var(--text-accent) 60%, var(--text-muted));
+  --checkbox-border-color-hover: var(--text-accent);
+
+  /* Bold (**text**) */
+  --bold-weight: 700;
+  --bold-color: color-mix(in srgb, var(--text-accent) 35%, var(--text-normal));
+
+  /* Links */
+  --link-decoration-thickness: 1px;
+
+  /* Scrollbar */
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: rgba(150, 155, 165, 0.08);
+  --scrollbar-active-thumb-bg: rgba(150, 155, 165, 0.22);
+}
+
+.theme-dark {
+  /* Softer body text brightness to reduce eye strain */
+  --text-normal: #c3c6cd;
+  --bold-color: color-mix(in srgb, var(--text-accent) 35%, #eef0f4);
+  --scrollbar-bg: transparent;
+  --scrollbar-thumb-bg: rgba(255, 255, 255, 0.06);
+  --scrollbar-active-thumb-bg: rgba(255, 255, 255, 0.18);
+}
+
+/* Heading level micro-badge (Reading view & Live Preview) */
+.markdown-rendered :is(h1, h2, h3, h4, h5, h6)::before,
+.cm-s-obsidian .HyperMD-header::before {
+  display: inline-block;
+  font-family: var(--font-monospace);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.06em;
+  color: var(--text-accent);
+  opacity: 0.6;
+  margin-right: 6px;
+  vertical-align: baseline;
+  transform: translateY(1px);
+  user-select: none;
+  pointer-events: none;
+}
+
+.markdown-rendered h1::before,
+.cm-s-obsidian .HyperMD-header-1::before {
+  content: "H1";
+}
+
+.markdown-rendered h2::before,
+.cm-s-obsidian .HyperMD-header-2::before {
+  content: "H2";
+}
+
+.markdown-rendered h3::before,
+.cm-s-obsidian .HyperMD-header-3::before {
+  content: "H3";
+}
+
+.markdown-rendered h4::before,
+.cm-s-obsidian .HyperMD-header-4::before {
+  content: "H4";
+}
+
+.markdown-rendered h5::before,
+.cm-s-obsidian .HyperMD-header-5::before {
+  content: "H5";
+}
+
+.markdown-rendered h6::before,
+.cm-s-obsidian .HyperMD-header-6::before {
+  content: "H6";
+}
+
+/* Unordered list bullet: subtle halo & spacing so it stands out */
+.markdown-rendered ul > li > .list-bullet::after,
+.cm-s-obsidian .HyperMD-list-line .list-bullet::after {
+  box-shadow: 0 0 0 2.5px color-mix(in srgb, var(--text-accent) 18%, transparent);
+}
+
+.cm-s-obsidian span.cm-formatting-list-ul {
+  margin-right: 0.35em;
+}
+
+/* Ordered list numbers: bold accent monospace with clear gap */
+.markdown-rendered ol > li::marker,
+.cm-s-obsidian span.cm-formatting-list-ol {
+  font-family: var(--font-monospace);
+  font-size: 0.9em;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--text-accent) 80%, var(--text-normal));
+}
+
+.cm-s-obsidian span.cm-formatting-list-ol {
+  margin-right: 0.3em;
+}
+
+/* Bold (**text**): keep weight + subtle bottom highlighter */
+.markdown-rendered strong:not(:is(h1, h2, h3, h4, h5, h6) strong),
+.cm-s-obsidian .cm-line:not(.HyperMD-header) .cm-strong:not(.cm-formatting) {
+  background: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--text-accent) 28%, transparent) 36%,
+    transparent 36%
+  );
+  padding: 0 2px;
+  border-radius: 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* External links: replace bulky default icon with heading-style micro badge */
+.markdown-rendered a.external-link,
+.cm-s-obsidian .external-link {
+  background-image: none;
+  padding-inline-end: 0;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--text-accent) 45%, transparent);
+}
+
+.cm-s-obsidian span.cm-link,
+.cm-s-obsidian span.cm-url {
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, var(--text-accent) 45%, transparent);
+}
+
+.markdown-rendered a.external-link::before,
+.cm-s-obsidian span.cm-link:not(.cm-formatting-link):not(.cm-link + .cm-link)::before,
+.cm-s-obsidian span.cm-url:not(.cm-string):not(.cm-formatting):not(.cm-url + .cm-url)::before {
+  content: "↗";
+  display: inline-block;
+  font-family: var(--font-monospace);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-accent);
+  opacity: 0.65;
+  margin-right: 3px;
+  vertical-align: baseline;
+  transform: translateY(1px);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Editor / Note view container: pure accent inner shadow & nearly invisible scrollbar */
+.workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] > .view-content {
+  position: relative;
+  width: auto;
+  margin: 0 8px 8px 8px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.workspace-split.mod-root .workspace-leaf-content[data-type="markdown"] > .view-content::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 5;
+  box-shadow: inset 0 0 18px color-mix(in srgb, var(--text-accent) 12%, transparent);
+}
+
+.workspace-split.mod-root
+  .workspace-leaf.mod-active
+  .workspace-leaf-content[data-type="markdown"]
+  > .view-content::after {
+  box-shadow: inset 0 0 24px color-mix(in srgb, var(--text-accent) 22%, transparent);
+}
+
+body:not(.native-scrollbars)
+  .workspace-split.mod-root
+  .workspace-leaf-content[data-type="markdown"]
+  .view-content
+  ::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-bg);
+  background-clip: padding-box;
+}
+
+body:not(.native-scrollbars)
+  .workspace-split.mod-root
+  .workspace-leaf-content[data-type="markdown"]
+  .view-content
+  ::-webkit-scrollbar-thumb:hover,
+body:not(.native-scrollbars)
+  .workspace-split.mod-root
+  .workspace-leaf-content[data-type="markdown"]
+  .view-content
+  ::-webkit-scrollbar-thumb:active {
+  background-color: var(--scrollbar-active-thumb-bg);
+}

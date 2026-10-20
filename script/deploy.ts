@@ -3,13 +3,20 @@ import { homedir } from "node:os";
 import { isAbsolute, join } from "node:path";
 
 const arg = process.argv[2]?.trim() || "dev";
-const targetDir = arg.startsWith("~")
+const vaultDir = arg.startsWith("~")
   ? arg.replace(/^~(?=$|\/)/, homedir())
   : isAbsolute(arg)
     ? arg
-    : join(homedir(), "note", arg, ".obsidian/plugins/minutiae");
+    : join(homedir(), "note", arg);
+const targetDir = vaultDir.includes(".obsidian")
+  ? vaultDir
+  : join(vaultDir, ".obsidian/plugins/minutiae");
+const themeTargetDir = vaultDir.includes(".obsidian")
+  ? null
+  : join(vaultDir, ".obsidian/themes/minutiae");
 
 const distDir = "dist";
+const themeDir = "theme";
 
 let files: string[];
 try {
@@ -28,3 +35,12 @@ await mkdir(targetDir, { recursive: true });
 await Promise.all(files.map((file) => copyFile(join(distDir, file), join(targetDir, file))));
 
 console.log(`Deployed dist/ to ${targetDir}`);
+
+if (themeTargetDir) {
+  const themeFiles = await readdir(themeDir);
+  await mkdir(themeTargetDir, { recursive: true });
+  await Promise.all(
+    themeFiles.map((file) => copyFile(join(themeDir, file), join(themeTargetDir, file))),
+  );
+  console.log(`Deployed theme/ to ${themeTargetDir}`);
+}
