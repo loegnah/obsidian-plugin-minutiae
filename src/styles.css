@@ -9,3 +9,54 @@
   margin-left: 6px;
   white-space: nowrap;
 }
+
+/* Query units use each pane's content width, excluding its padding and scrollbar. */
+body.minutiae-wide-tables
+  .view-content
+  .markdown-reading-view
+  > .markdown-preview-view.is-readable-line-width,
+body.minutiae-wide-tables
+  .view-content
+  .markdown-source-view.mod-cm6.is-live-preview.is-readable-line-width
+  > .cm-editor
+  > .cm-scroller {
+  container-type: inline-size;
+}
+
+body.minutiae-wide-tables
+  .view-content
+  .markdown-reading-view
+  > .markdown-preview-view.is-readable-line-width
+  > .markdown-preview-sizer
+  > .el-table {
+  width: max-content;
+  max-width: 100cqw;
+  box-sizing: border-box;
+  margin-inline: 0;
+  /* Translate percentages use the table wrapper's width, so small tables stay put. */
+  translate: min(0px, calc((min(var(--file-line-width), 100cqw) - 100%) / 2)) 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+body.minutiae-wide-tables
+  .view-content
+  .markdown-source-view.mod-cm6.is-live-preview.is-readable-line-width
+  > .cm-editor
+  > .cm-scroller
+  > .cm-sizer
+  > .cm-contentContainer
+  > .cm-content
+  > .cm-table-widget {
+  width: max-content;
+  max-width: calc(100cqw + 2 * var(--table-drag-handle-size));
+  box-sizing: border-box;
+  margin: 0 calc(-1 * var(--table-drag-handle-size)) !important;
+  translate: min(
+      0px,
+      calc((min(var(--file-line-width), 100cqw) + 2 * var(--table-drag-handle-size) - 100%) / 2)
+    )
+    0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}

@@ -6,12 +6,14 @@ export interface MinutiaeSettings {
   exampleToggle: boolean;
   codeBlockSelectAll: boolean;
   noteTypeBadge: boolean;
+  wideTables: boolean;
 }
 
 export const DEFAULT_SETTINGS: MinutiaeSettings = {
   exampleToggle: false,
   codeBlockSelectAll: true,
   noteTypeBadge: true,
+  wideTables: true,
 };
 
 export class MinutiaeSettingTab extends PluginSettingTab {
@@ -52,6 +54,19 @@ export class MinutiaeSettingTab extends PluginSettingTab {
       .addToggle((toggle) =>
         toggle.setValue(this.plugin.settings.noteTypeBadge).onChange(async (value) => {
           this.plugin.settings.noteTypeBadge = value;
+          await this.plugin.saveSettings();
+        }),
+      );
+
+    new Setting(containerEl)
+      .setName("Wide tables")
+      .setDesc(
+        "Let tables use the full note pane width, scrolling horizontally when wider than the pane.",
+      )
+      .addToggle((toggle) =>
+        toggle.setValue(this.plugin.settings.wideTables).onChange(async (value) => {
+          this.plugin.settings.wideTables = value;
+          this.plugin.applyWideTables();
           await this.plugin.saveSettings();
         }),
       );
