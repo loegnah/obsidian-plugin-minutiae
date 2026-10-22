@@ -57,6 +57,36 @@ describe("filterFilesForFolder", () => {
       "Projects/App/main.md",
     ]);
   });
+
+  it("sorts root files by newest modification time first", () => {
+    const files = [
+      { path: "old.md", name: "old.md", stat: { mtime: 100 } },
+      { path: "newest.md", name: "newest.md", stat: { mtime: 300 } },
+      { path: "middle.md", name: "middle.md", stat: { mtime: 200 } },
+    ];
+
+    expect(filterFilesForFolder(files, null).map((f) => f.path)).toEqual([
+      "newest.md",
+      "middle.md",
+      "old.md",
+    ]);
+  });
+
+  it("sorts selected folder files by newest modification time, breaking ties like before", () => {
+    const files = [
+      { path: "Projects/b.md", name: "b.md", stat: { mtime: 100 } },
+      { path: "Projects/sub/a.md", name: "a.md", stat: { mtime: 200 } },
+      { path: "Projects/a.md", name: "a.md", stat: { mtime: 100 } },
+      { path: "Projects/sub/c.md", name: "c.md", stat: { mtime: 100 } },
+    ];
+
+    expect(filterFilesForFolder(files, "Projects").map((f) => f.path)).toEqual([
+      "Projects/sub/a.md",
+      "Projects/a.md",
+      "Projects/b.md",
+      "Projects/sub/c.md",
+    ]);
+  });
 });
 
 describe("getRelativeSubfolder", () => {

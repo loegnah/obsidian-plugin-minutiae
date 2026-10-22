@@ -23,23 +23,27 @@ export function getRelativeSubfolder(
   return lastSlash === -1 ? null : rel.slice(0, lastSlash);
 }
 
-export function filterFilesForFolder<T extends { path: string; name: string }>(
-  files: readonly T[],
-  selectedFolderPath: string | null | undefined,
-): T[] {
+export function filterFilesForFolder<
+  T extends { path: string; name: string; stat?: { mtime: number } },
+>(files: readonly T[], selectedFolderPath: string | null | undefined): T[] {
   const folder = normalizeFolderPath(selectedFolderPath);
   const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
 
   if (folder === null) {
     return files
       .filter((file) => !file.path.includes("/"))
-      .sort((a, b) => collator.compare(a.name, b.name));
+      .sort((a, b) => {
+        const mtimeDiff = (b.stat?.mtime ?? 0) - (a.stat?.mtime ?? 0);
+        return mtimeDiff !== 0 ? mtimeDiff : collator.compare(a.name, b.name);
+      });
   }
 
   const prefix = `${folder}/`;
   return files
     .filter((file) => file.path.startsWith(prefix))
     .sort((a, b) => {
+      const mtimeDiff = (b.stat?.mtime ?? 0) - (a.stat?.mtime ?? 0);
+      if (mtimeDiff !== 0) return mtimeDiff;
       const aSub = getRelativeSubfolder(a.path, folder);
       const bSub = getRelativeSubfolder(b.path, folder);
       if ((aSub === null) !== (bSub === null)) {
@@ -96,6 +100,45 @@ export function registerSplitExplorer(plugin: Plugin, isEnabled: () => boolean):
       });
   };
 
+  type FileExplorerView = {
+    onFileContextMenu?: (evt: MouseEvent, file: TFile) => void;
+    startRenameFile?: (target?: unknown) => void;
+  };
+
+  // The native explorer's inline rename targets `.nav-file`s we hide, so route it to the OS/rename modal.
+  let patchedViews = new WeakSet<object>();
+  const renameRestores: Array<() => void> = [];
+
+  const patchRenameOnce = (view: FileExplorerView) => {
+    if (patchedViews.has(view) || typeof view.startRenameFile !== "function") return;
+    patchedViews.add(view);
+    const original = view.startRenameFile;
+    view.startRenameFile = (target?: unknown) => {
+      if (isEnabled() && target && typeof target === "object" && !("children" in target)) {
+        const fileManager = app.fileManager as {
+          promptForFileRename?: (file: TFile) => Promise<void>;
+        };
+        if (fileManager.promptForFileRename) {
+          void fileManager.promptForFileRename(target as TFile);
+          return;
+        }
+      }
+      original.call(view, target);
+    };
+    renameRestores.push(() => {
+      view.startRenameFile = original;
+    });
+  };
+
+  const openFileContextMenu = (evt: MouseEvent, file: TFile) => {
+    const view = app.workspace.getLeavesOfType("file-explorer")[0]?.view as unknown as
+      | FileExplorerView
+      | undefined;
+    if (!view?.onFileContextMenu) return;
+    patchRenameOnce(view);
+    view.onFileContextMenu(evt, file);
+  };
+
   const createFileItemEl = (file: TFile, activePath: string, subfolder: string | null) => {
     const itemEl = document.createElement("div");
     itemEl.className = "tree-item nav-file";
@@ -136,6 +179,12 @@ export function registerSplitExplorer(plugin: Plugin, isEnabled: () => boolean):
         evt.stopPropagation();
         void app.workspace.getLeaf("tab").openFile(file);
       }
+    });
+
+    selfEl.addEventListener("contextmenu", (evt) => {
+      evt.preventDefault();
+      evt.stopPropagation();
+      openFileContextMenu(evt, file);
     });
 
     itemEl.appendChild(selfEl);
@@ -279,6 +328,8 @@ export function registerSplitExplorer(plugin: Plugin, isEnabled: () => boolean):
     document
       .querySelectorAll(`.${SELECTED_FOLDER_CLASS}`)
       .forEach((el) => el.classList.remove(SELECTED_FOLDER_CLASS));
+    renameRestores.splice(0).forEach((restore) => restore());
+    patchedViews = new WeakSet<object>();
   };
 
   const refresh = () => {
@@ -467,6 +518,7 @@ export function registerSplitExplorer(plugin: Plugin, isEnabled: () => boolean):
   plugin.registerEvent(app.workspace.on("layout-change", schedule));
   plugin.registerEvent(app.vault.on("create", schedule));
   plugin.registerEvent(app.vault.on("delete", schedule));
+  plugin.registerEvent(app.vault.on("modify", schedule));
   plugin.registerEvent(
     app.vault.on("rename", (file, oldPath) => {
       if (selectedFolderPath === oldPath) {
