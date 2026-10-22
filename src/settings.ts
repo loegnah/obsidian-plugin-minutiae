@@ -7,6 +7,7 @@ export interface MinutiaeSettings {
   codeBlockSelectAll: boolean;
   noteTypeBadge: boolean;
   wideTables: boolean;
+  splitExplorer: boolean;
 }
 
 export const DEFAULT_SETTINGS: MinutiaeSettings = {
@@ -14,6 +15,7 @@ export const DEFAULT_SETTINGS: MinutiaeSettings = {
   codeBlockSelectAll: true,
   noteTypeBadge: true,
   wideTables: true,
+  splitExplorer: true,
 };
 
 export class MinutiaeSettingTab extends PluginSettingTab {
@@ -67,6 +69,17 @@ export class MinutiaeSettingTab extends PluginSettingTab {
         toggle.setValue(this.plugin.settings.wideTables).onChange(async (value) => {
           this.plugin.settings.wideTables = value;
           this.plugin.applyWideTables();
+          await this.plugin.saveSettings();
+        }),
+      );
+
+    new Setting(containerEl)
+      .setName("Split file explorer")
+      .setDesc("Show folders on top and files of the selected folder (or root) on the bottom.")
+      .addToggle((toggle) =>
+        toggle.setValue(this.plugin.settings.splitExplorer).onChange(async (value) => {
+          this.plugin.settings.splitExplorer = value;
+          this.plugin.refreshSplitExplorer();
           await this.plugin.saveSettings();
         }),
       );

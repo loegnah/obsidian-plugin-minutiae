@@ -98,6 +98,24 @@ body {
   --scrollbar-bg: transparent;
   --scrollbar-thumb-bg: rgba(150, 155, 165, 0.08);
   --scrollbar-active-thumb-bg: rgba(150, 155, 165, 0.22);
+
+  /* File Explorer / Navigation */
+  --nav-item-color: var(--text-muted);
+  --nav-item-color-hover: var(--text-normal);
+  --nav-item-color-active: color-mix(in srgb, var(--text-accent) 75%, var(--text-normal));
+  --nav-item-color-selected: var(--text-normal);
+  --nav-item-background-hover: color-mix(in srgb, var(--text-accent) 8%, transparent);
+  --nav-item-background-active: color-mix(in srgb, var(--text-accent) 14%, transparent);
+  --nav-item-background-selected: color-mix(in srgb, var(--text-accent) 18%, transparent);
+  --nav-item-weight-active: 600;
+  --nav-collapse-icon-color: color-mix(in srgb, var(--text-accent) 60%, var(--text-faint));
+  --nav-collapse-icon-color-collapsed: var(--text-faint);
+  --nav-indentation-guide-width: 1px;
+  --nav-indentation-guide-color: color-mix(
+    in srgb,
+    var(--text-accent) 16%,
+    var(--background-modifier-border)
+  );
 }
 
 .theme-dark {
@@ -369,4 +387,63 @@ body:not(.native-scrollbars)
   .view-content
   ::-webkit-scrollbar-thumb:active {
   background-color: var(--scrollbar-active-thumb-bg);
+}
+
+/* File Explorer: folder/file hierarchy, active accent pill & tree guides */
+.workspace-leaf-content[data-type="file-explorer"] :is(.nav-file-title, .nav-folder-title) {
+  border-radius: 6px;
+  margin-bottom: 1px;
+  padding-block: 4px;
+}
+
+.nav-files-container .nav-folder:not(.mod-root) > .nav-folder-title {
+  color: color-mix(in srgb, var(--text-accent) 85%, var(--text-normal));
+  font-weight: 650;
+}
+
+.nav-files-container .nav-folder:not(.mod-root) :where(.nav-folder) > .nav-folder-title {
+  color: color-mix(in srgb, var(--text-accent) 52%, var(--text-normal));
+  font-weight: 600;
+}
+
+.nav-files-container
+  .nav-folder:not(.mod-root)
+  :where(.nav-folder .nav-folder)
+  > .nav-folder-title {
+  color: color-mix(in srgb, var(--text-accent) 26%, var(--text-normal));
+  font-weight: 550;
+}
+
+.nav-files-container
+  .nav-folder:not(.mod-root)
+  :where(.nav-folder .nav-folder .nav-folder)
+  > .nav-folder-title {
+  color: color-mix(in srgb, var(--text-accent) 12%, var(--text-muted));
+  font-weight: 500;
+}
+
+.nav-files-container .nav-folder:not(.mod-root) > .nav-folder-title:hover {
+  color: var(--text-accent);
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-title.is-active {
+  box-shadow: inset 2.5px 0 0 var(--text-accent);
+}
+
+.nav-files-container .nav-folder:hover > .nav-folder-children {
+  border-inline-start-color: color-mix(
+    in srgb,
+    var(--text-accent) 36%,
+    var(--background-modifier-border)
+  );
+}
+
+.workspace-leaf-content[data-type="file-explorer"] .nav-file-tag {
+  font-family: var(--font-monospace);
+  font-size: 9.5px;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 4px;
+  color: color-mix(in srgb, var(--text-accent) 80%, var(--text-muted));
+  background-color: color-mix(in srgb, var(--text-accent) 12%, transparent);
 }

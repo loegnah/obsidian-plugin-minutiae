@@ -2,12 +2,14 @@ import { Notice, Plugin, WorkspaceWindow } from "obsidian";
 
 import { createCodeBlockSelectExtension } from "./feature/codeBlockSelect";
 import { registerNoteTypeBadges } from "./feature/noteType";
+import { registerSplitExplorer } from "./feature/splitExplorer";
 import { DEFAULT_SETTINGS, MinutiaeSettingTab, type MinutiaeSettings } from "./settings";
 
 const WIDE_TABLES_CLASS = "minutiae-wide-tables";
 
 export default class MinutiaePlugin extends Plugin {
   settings: MinutiaeSettings = DEFAULT_SETTINGS;
+  refreshSplitExplorer: () => void = () => {};
 
   async onload() {
     await this.loadSettings();
@@ -24,6 +26,7 @@ export default class MinutiaePlugin extends Plugin {
       createCodeBlockSelectExtension(() => this.settings.codeBlockSelectAll),
     );
     registerNoteTypeBadges(this, () => this.settings.noteTypeBadge);
+    this.refreshSplitExplorer = registerSplitExplorer(this, () => this.settings.splitExplorer);
 
     const statusBarItem = this.addStatusBarItem();
     statusBarItem.setText("✨ Minutiae");
