@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "inlineSources": true,
     "module": "ESNext",
     "target": "ES2020",
     "allowJs": true,
     "noImplicitAny": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": false,
     "strict": true,
     "skipLibCheck": true,

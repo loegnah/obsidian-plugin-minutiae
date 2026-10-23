@@ -13,18 +13,23 @@ body {
   --h5-size: 1.04em;
   --h6-size: 1em;
 
-  /* Heading Colors: Accent -> Text Normal gradient */
-  --h1-color: var(--text-accent);
-  --h2-color: color-mix(in srgb, var(--text-accent) 82%, var(--text-normal));
-  --h3-color: color-mix(in srgb, var(--text-accent) 64%, var(--text-normal));
-  --h4-color: color-mix(in srgb, var(--text-accent) 46%, var(--text-normal));
-  --h5-color: color-mix(in srgb, var(--text-accent) 28%, var(--text-normal));
-  --h6-color: color-mix(in srgb, var(--text-accent) 14%, var(--text-normal));
+  /* Heading Colors: split-complementary (+140° hue, orange -> teal) -> Text Normal gradient */
+  --heading-accent: hsl(
+    calc(var(--accent-h) + 140),
+    calc(var(--accent-s) * 0.72),
+    clamp(36%, calc(var(--accent-l) * 0.85), 48%)
+  );
+  --h1-color: var(--heading-accent);
+  --h2-color: color-mix(in srgb, var(--heading-accent) 82%, var(--text-normal));
+  --h3-color: color-mix(in srgb, var(--heading-accent) 64%, var(--text-normal));
+  --h4-color: color-mix(in srgb, var(--heading-accent) 46%, var(--text-normal));
+  --h5-color: color-mix(in srgb, var(--heading-accent) 28%, var(--text-normal));
+  --h6-color: color-mix(in srgb, var(--heading-accent) 14%, var(--text-normal));
 
   /* Lists: clearer markers & breathing room */
   --list-indent: 2.25em;
   --list-indent-editing: 1.25em;
-  --list-spacing: 0.2em;
+  --list-spacing: 0.08em;
   --list-bullet-size: 0.42em;
   --list-marker-color: color-mix(in srgb, var(--text-accent) 75%, var(--text-muted));
   --list-marker-color-hover: var(--text-accent);
@@ -121,6 +126,11 @@ body {
 .theme-dark {
   /* Softer body text brightness to reduce eye strain */
   --text-normal: #c3c6cd;
+  --heading-accent: hsl(
+    calc(var(--accent-h) + 140),
+    calc(var(--accent-s) * 0.72),
+    clamp(54%, calc(var(--accent-l) * 1.18), 66%)
+  );
   --inline-title-color: #f0f2f6;
   --bold-color: color-mix(in srgb, var(--text-accent) 35%, #eef0f4);
   --scrollbar-bg: transparent;
@@ -190,6 +200,41 @@ body {
   color: color-mix(in srgb, var(--text-accent) 80%, var(--text-normal));
 }
 
+/* Heading decorations: H1 box, H2 bottom underline, H3 left bar */
+.markdown-rendered :is(h1, h2, h3, h4, h5, h6) {
+  margin-block-end: 0.45em;
+}
+
+.cm-s-obsidian .HyperMD-header {
+  padding-bottom: 0.22em !important;
+  margin-bottom: 0.25em !important;
+}
+
+.markdown-rendered :is(.el-h1, .el-h2) {
+  margin-bottom: 0.55em !important;
+}
+
+.markdown-rendered h1,
+.markdown-source-view.mod-cm6 .cm-content > .cm-line.HyperMD-header-1 {
+  padding: 0.28em 0.55em !important;
+  margin-bottom: 0.5em !important;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--heading-accent) 11%, transparent),
+    color-mix(in srgb, var(--heading-accent) 4%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--heading-accent) 36%, var(--background-modifier-border));
+  border-radius: 6px;
+}
+
+.markdown-rendered h2,
+.markdown-source-view.mod-cm6 .cm-content > .cm-line.HyperMD-header-2 {
+  padding-bottom: 0.22em !important;
+  margin-bottom: 0.5em !important;
+  border-bottom: 1.5px solid
+    color-mix(in srgb, var(--heading-accent) 38%, var(--background-modifier-border));
+}
+
 /* Heading level micro-badge (Reading view & Live Preview) */
 .markdown-rendered :is(h1, h2, h3, h4, h5, h6)::before,
 .cm-s-obsidian .HyperMD-header::before {
@@ -199,7 +244,7 @@ body {
   font-weight: 600;
   line-height: 1;
   letter-spacing: -0.06em;
-  color: var(--text-accent);
+  color: var(--heading-accent);
   opacity: 0.6;
   margin-right: 6px;
   vertical-align: baseline;
@@ -221,6 +266,8 @@ body {
 .markdown-rendered h3::before,
 .cm-s-obsidian .HyperMD-header-3::before {
   content: "H3";
+  padding: 4px 0 2px 5px;
+  border-left: 1.5px solid var(--heading-accent);
 }
 
 .markdown-rendered h4::before,
