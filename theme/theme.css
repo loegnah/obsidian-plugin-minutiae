@@ -206,16 +206,14 @@ body {
 }
 
 .cm-s-obsidian .HyperMD-header {
-  padding-bottom: 0.22em !important;
-  margin-bottom: 0.25em !important;
+  padding-bottom: 0.45em !important;
 }
 
 .markdown-rendered :is(.el-h1, .el-h2) {
   margin-bottom: 0.55em !important;
 }
 
-.markdown-rendered h1,
-.markdown-source-view.mod-cm6 .cm-content > .cm-line.HyperMD-header-1 {
+.markdown-rendered h1 {
   padding: 0.28em 0.55em !important;
   margin-bottom: 0.5em !important;
   background: linear-gradient(
@@ -227,18 +225,39 @@ body {
   border-radius: 6px;
 }
 
-.markdown-rendered h2,
-.markdown-source-view.mod-cm6 .cm-content > .cm-line.HyperMD-header-2 {
+.markdown-source-view.mod-cm6 .cm-content > .cm-line.HyperMD-header-1 {
+  padding: 0.28em 0.55em 0.65em !important;
+  background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--heading-accent) 11%, transparent),
+      color-mix(in srgb, var(--heading-accent) 4%, transparent)
+    )
+    0 0 / 100% calc(100% - 0.37em) no-repeat;
+  box-shadow: inset 0 0 0 1px
+    color-mix(in srgb, var(--heading-accent) 36%, var(--background-modifier-border));
+  border-radius: 6px;
+  clip-path: inset(0 0 0.37em 0 round 6px);
+}
+
+.markdown-rendered h2 {
   padding-bottom: 0.22em !important;
   margin-bottom: 0.5em !important;
   border-bottom: 1.5px solid
     color-mix(in srgb, var(--heading-accent) 38%, var(--background-modifier-border));
 }
 
+.markdown-source-view.mod-cm6 .cm-content > .cm-line.HyperMD-header-2 {
+  padding-bottom: 0.72em !important;
+  background: linear-gradient(
+      color-mix(in srgb, var(--heading-accent) 38%, var(--background-modifier-border)),
+      color-mix(in srgb, var(--heading-accent) 38%, var(--background-modifier-border))
+    )
+    0 calc(100% - 0.5em) / 100% 1.5px no-repeat;
+}
+
 /* Heading level micro-badge (Reading view & Live Preview) */
 .markdown-rendered :is(h1, h2, h3, h4, h5, h6)::before,
 .cm-s-obsidian .HyperMD-header::before {
-  display: inline-block;
   font-family: var(--font-monospace);
   font-size: 11px;
   font-weight: 600;
@@ -246,16 +265,31 @@ body {
   letter-spacing: -0.06em;
   color: var(--heading-accent);
   opacity: 0.6;
+  user-select: none;
+  pointer-events: none;
+}
+
+.markdown-rendered :is(h1, h2, h3, h4, h5, h6)::before {
+  display: inline-block;
   margin-right: 6px;
   vertical-align: baseline;
   transform: translateY(1px);
-  user-select: none;
-  pointer-events: none;
+}
+
+/* Float CM6 ::before out of inline flow so CodeMirror posAtCoords matches text node rects */
+.cm-s-obsidian .HyperMD-header::before {
+  float: left;
+  margin-top: 0.35em;
+  margin-right: 6px;
 }
 
 .markdown-rendered h1::before,
 .cm-s-obsidian .HyperMD-header-1::before {
   content: "H1";
+}
+
+.cm-s-obsidian .HyperMD-header-1::before {
+  margin-top: 0.38em;
 }
 
 .markdown-rendered h2::before,
@@ -266,10 +300,13 @@ body {
 .markdown-rendered h3::before,
 .cm-s-obsidian .HyperMD-header-3::before {
   content: "H3";
-  padding: 4px 0 2px 5px;
+  padding: 2px 0 2px 5px;
   border-left: 1.5px solid var(--heading-accent);
 }
 
+.cm-s-obsidian .HyperMD-header-3::before {
+  margin-top: 0.2em;
+}
 .markdown-rendered h4::before,
 .cm-s-obsidian .HyperMD-header-4::before {
   content: "H4";
@@ -292,7 +329,7 @@ body {
 }
 
 .cm-s-obsidian span.cm-formatting-list-ul {
-  margin-right: 0.35em;
+  letter-spacing: 0.2em;
 }
 
 /* Ordered list numbers: bold accent monospace with clear gap */
@@ -305,7 +342,7 @@ body {
 }
 
 .cm-s-obsidian span.cm-formatting-list-ol {
-  margin-right: 0.3em;
+  letter-spacing: 0.05em;
 }
 
 /* Bold (**text**): keep weight + subtle bottom highlighter */
@@ -316,7 +353,6 @@ body {
     color-mix(in srgb, var(--text-accent) 28%, transparent) 36%,
     transparent 36%
   );
-  padding: 0 2px;
   border-radius: 2px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
@@ -337,9 +373,7 @@ body {
   text-decoration-color: color-mix(in srgb, var(--text-accent) 45%, transparent);
 }
 
-.markdown-rendered a.external-link::before,
-.cm-s-obsidian span.cm-link:not(.cm-formatting-link):not(.cm-link + .cm-link)::before,
-.cm-s-obsidian span.cm-url:not(.cm-string):not(.cm-formatting):not(.cm-url + .cm-url)::before {
+.markdown-rendered a.external-link::before {
   content: "↗";
   display: inline-block;
   font-family: var(--font-monospace);
